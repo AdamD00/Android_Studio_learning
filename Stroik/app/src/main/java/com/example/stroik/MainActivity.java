@@ -14,6 +14,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import android.os.Bundle;
@@ -23,21 +24,31 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
    private GestureDetector mDetector;
    private static final String TAG = "Swipe Position";
    private float x1,x2,y1,y2;
+   private int i = 0;
    private static int MIN_DISTANCE = 150;
+   private int[] tabImg ={
+           R.drawable.violin,
+           R.drawable.cello,
+           R.drawable.guitar
+   };
+   private String[] tabString={
+           "Skrzypce",
+           "Wiolonczela",
+           "Gitara"
+   };
+   private ImageView view;
+   private TextView txtView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        View view = findViewById(R.id.imageView);
+         view = findViewById(R.id.imageView);
+         txtView = findViewById(R.id.textView3);
         this.mDetector = new GestureDetector(MainActivity.this,this);
+        view.setImageResource(tabImg[i]);
+        txtView.setText(tabString[i]);
 
-        FlingAnimation fling = new FlingAnimation(view, DynamicAnimation.SCROLL_X);
-        fling.setStartVelocity(2000)
-                .setMinValue(0)
-                .setMaxValue(15)
-                .setFriction(1.1f)
-                .start();
     }
 
     @Override
@@ -57,16 +68,20 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
 
                 if(Math.abs(valueX)>MIN_DISTANCE)
                 {
+
                     if(x2>x1)
                     {
-                        Toast.makeText(this,"Right is swiped",Toast.LENGTH_SHORT).show();
-                        Log.d(TAG, "Right Swipe");
+                        if(i==2) i=-1;
+                        i++;
+
                     }
                     else
                     {
-                        Toast.makeText(this,"Left is swiped",Toast.LENGTH_SHORT).show();
-                        Log.d(TAG, "Left Swipe");
+                        if(i==0) i=3;
+                        i--;
                     }
+                    view.setImageResource(tabImg[i]);
+                    txtView.setText(tabString[i]);
                 }
 
 

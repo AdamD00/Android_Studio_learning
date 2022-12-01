@@ -13,15 +13,26 @@
         android:layout_centerHorizontal="true"
         android:background="@drawable/circle">
 
-            <ImageView
-                android:id="@+id/imageView"
-                android:layout_width="191dp"
-                android:layout_height="187dp"
-                android:layout_gravity="center"
-                android:layout_marginStart="0dp"
-                android:clickable="true"
-                app:srcCompat="@drawable/guitar" />
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="191dp"
+            android:layout_height="187dp"
+            android:layout_gravity="center"
+            android:layout_marginStart="0dp"
+            android:clickable="true" />
 
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="220dp"
+        android:textColor="@color/white"
+        android:text="" />
+
 
 </RelativeLayout>
