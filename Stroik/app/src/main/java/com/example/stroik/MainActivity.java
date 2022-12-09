@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -32,13 +33,11 @@ public class MainActivity extends AppCompatActivity {
    private int[] tabImg ={
            R.drawable.violin,
            R.drawable.cello,
-           R.drawable.guitar
    };
 
    private String[] tabString={
            "Skrzypce",
-           "Wiolonczela",
-           "Gitara"
+           "Wiolonczela"
    };
    private ImageButton btn;
    private ImageView view, instrument;
@@ -79,27 +78,18 @@ public class MainActivity extends AppCompatActivity {
                     case MotionEvent.ACTION_UP:
                         if(distanceX>0)
                         {
-                            if(i==2) i=-1;
+                            if(i==1) i=-1;
                             i++;
 
                         }
                         else if(distanceX<0)
                         {
-                            if(i==0) i=3;
+                            if(i==0) i=2;
                             i--;
                         }
                         else {
-                            switch (i) {
-                                case 0:
-                                    Toast.makeText(getApplicationContext(), "Stroimy skrzypce", Toast.LENGTH_SHORT).show();
-                                    break;
-                                case 1:
-                                    Toast.makeText(getApplicationContext(), "Stroimy wiolke", Toast.LENGTH_SHORT).show();
-                                    break;
-                                case 2:
-                                    Toast.makeText(getApplicationContext(), "Stroimy gitarę", Toast.LENGTH_SHORT).show();
-                                    break;
-                            }
+                            openActivity2();
+
                         }
                         distanceX = 0;
                         btn.setImageResource(tabImg[i]);
@@ -113,22 +103,12 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
-    public void onClick (ImageButton btn)
+    public void openActivity2()
     {
-
-        switch(i)
-        {
-            case 0:
-                Toast.makeText(getApplicationContext(), "Stroimy skrzypce", Toast.LENGTH_SHORT).show();
-                break;
-            case 1:
-                Toast.makeText(getApplicationContext(), "Stroimy wiolke", Toast.LENGTH_SHORT).show();
-                break;
-            case 2:
-                Toast.makeText(getApplicationContext(), "Stroimy gitarę", Toast.LENGTH_SHORT).show();
-                break;
-        }
+        Intent intent = new Intent(this,Activity2.class);
+        startActivity(intent);
     }
+
 
 
 /*
