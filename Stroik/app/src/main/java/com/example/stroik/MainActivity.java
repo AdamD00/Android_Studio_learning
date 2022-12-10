@@ -3,6 +3,9 @@ package com.example.stroik;
 
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.dynamicanimation.animation.DynamicAnimation;
+import androidx.dynamicanimation.animation.SpringAnimation;
+import androidx.dynamicanimation.animation.SpringForce;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
@@ -31,7 +34,8 @@ public class MainActivity extends AppCompatActivity {
    private float xDown, xDefault, distanceX;
    private int i = 0;
    private static int MIN_DISTANCE = 100;
-   private static int MAX_DISTANCE = 700;
+   private static int MAX_DISTANCE = 1000;
+   private static int MIN_CHANGE = 10;
    private int[] tabImg ={
            R.drawable.violin,
            R.drawable.cello,
@@ -64,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
        // view.setImageResource(tabImg[i]);
         txtView.setText(tabString[i]);
         btn = findViewById(R.id.imageButton1);
-
+        xDefault = btn.getX();
         btn.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -72,35 +76,34 @@ public class MainActivity extends AppCompatActivity {
                 switch(event.getActionMasked()){
                     case MotionEvent.ACTION_DOWN:
                         xDown = event.getX();
-                       xDefault = btn.getX();
+
                         break;
                     case MotionEvent.ACTION_MOVE:
                         float moveX;
                         moveX = event.getX();
                          distanceX=moveX-xDown;
                         float transformation = btn.getX()+distanceX;
-                        if((Math.abs(xDefault-transformation)>MIN_DISTANCE) && (Math.abs(xDefault-transformation)<MAX_DISTANCE)) btn.setX(btn.getX()+distanceX);
+                        btn.setX(btn.getX()+distanceX);
                         break;
                     case MotionEvent.ACTION_UP:
-                        if(distanceX>0)
-                        {
-                            if(i==1) i=-1;
-                            i++;
+                        if(Math.abs(distanceX)>MIN_CHANGE) {
+                            if (distanceX > 0) {
+                                if (i == 1) i = -1;
+                                i++;
 
+                            } else if (distanceX < 0) {
+                                if (i == 0) i = 2;
+                                i--;
+                            }
+                            distanceX = 0;
+                            btn.setImageResource(tabImg[i]);
+                            txtView.setText(tabString[i]);
                         }
-                        else if(distanceX<0)
-                        {
-                            if(i==0) i=2;
-                            i--;
-                        }
-                        else {
+                        else if(distanceX==0){
                             openActivity2();
 
                         }
-                        distanceX = 0;
-                        btn.setImageResource(tabImg[i]);
-                        txtView.setText(tabString[i]);
-                       btn.setX(xDefault);
+                        SpringAnimationX(v,xDefault);
                         break;
                 }
                 return true;
@@ -108,6 +111,15 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+    }
+    public void SpringAnimationX(View view, float position){
+        SpringAnimation springAnimation = new SpringAnimation(view, DynamicAnimation.TRANSLATION_X);
+        SpringForce springForce = new SpringForce();
+        springForce.setStiffness(SpringForce.STIFFNESS_VERY_LOW);
+        springForce.setFinalPosition(position);
+        springForce.setDampingRatio(SpringForce.DAMPING_RATIO_LOW_BOUNCY);
+        springAnimation.setSpring(springForce);
+        springAnimation.start();
     }
     public void openActivity2()
     {
