@@ -76,7 +76,6 @@ public class MainActivity extends AppCompatActivity {
                 switch(event.getActionMasked()){
                     case MotionEvent.ACTION_DOWN:
                         xDown = event.getX();
-
                         break;
                     case MotionEvent.ACTION_MOVE:
                         float moveX;
@@ -120,6 +119,10 @@ public class MainActivity extends AppCompatActivity {
         springForce.setDampingRatio(SpringForce.DAMPING_RATIO_LOW_BOUNCY);
         springAnimation.setSpring(springForce);
         springAnimation.start();
+    }
+    public void SwipeAnimation(View view, float position)
+    {
+
     }
     public void openActivity2()
     {
