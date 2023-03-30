@@ -13,11 +13,14 @@ import android.os.Process;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.widget.TextView;
-
+import org.jtransforms.fft.DoubleFFT_1D;
+import org.jtransforms.fft.FloatFFT_1D;
 
 import androidx.fragment.app.Fragment;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class AudioConstructor extends Fragment {
     private final int freq = 44100;
@@ -30,18 +33,18 @@ public class AudioConstructor extends Fragment {
     private AudioRecord audioRecord = null;
     private int channelOut = AudioFormat.CHANNEL_OUT_STEREO;
     private int channelIN = AudioFormat.CHANNEL_IN_STEREO;
-    private int encoding = AudioFormat.ENCODING_PCM_16BIT;
+    private int encoding = AudioFormat.ENCODING_PCM_FLOAT;
 
-
+    MainActivity mainObject = new MainActivity();
     protected AudioTrack audioTrack = null;
 
     private Thread Rthread = null;
 
+    public int numBytesRead;
 
 
 
-
-    protected void Start(int choice, short[] data, int numBytes) {
+    protected void Start(int choice, float[] data, int numBytes) {
 
 
         Rthread = new Thread(new Runnable() {
@@ -54,7 +57,10 @@ public class AudioConstructor extends Fragment {
 
                         break;
                     case 2:
-                        playSample(data,numBytes);
+                        playSample(data);
+                        break;
+                    case 3:
+                        FFT(data,numBytes);
                         break;
 
                 }
@@ -74,7 +80,7 @@ public class AudioConstructor extends Fragment {
     @SuppressLint({"MissingPermission", "RestrictedApi"})
     protected void recordSample() {
 
-            short[] buffer = new short[bufferSize]; // check bufferSize w tablicy vs w audioRecord
+            float[] buffer = new float[bufferSize]; // check bufferSize w tablicy vs w audioRecord
             boolean whileCheck = false;
             audioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC, freq, channelIN, encoding, bufferSize*2);
         Process.setThreadPriority(Process.THREAD_PRIORITY_AUDIO);
@@ -97,26 +103,27 @@ public class AudioConstructor extends Fragment {
                 }
                 if(whileCheck)  Log.d("While Loop", "1 while - initialized");
                 else Log.d("While Loop", "1 while - NOT initialized");
-                int numBytesRead = 0;
+                 numBytesRead = 0;
 
-               // while (true) {
+
+
                     try {
-                        numBytesRead = audioRecord.read(buffer, 0, bufferSize);
-                 //   if(!MainActivity.recording)
-                   // {
-                        audioRecord.stop();
 
-                   // }
+                        numBytesRead = audioRecord.read(buffer, 0, bufferSize, AudioRecord.READ_BLOCKING);
+
+
+                        if (numBytesRead > 0) {
+                            MainActivity.DataCopied(Arrays.copyOfRange(buffer, 0,numBytesRead),numBytesRead);
+
+                        }
                 } catch(Throwable t){
                     Log.e("Error", "Read failed");
                     t.printStackTrace();
                 }
-           // }
-                if (numBytesRead > 0) {
-                    MainActivity.DataCopied(Arrays.copyOfRange(buffer, 0,numBytesRead),numBytesRead);
-                }
 
-                audioRecord.release();
+
+
+
 
             } else {
                 Log.e("Error", "Record state failed");
@@ -128,7 +135,7 @@ public class AudioConstructor extends Fragment {
 
 
 
-    protected void playSample(short[] data, int numBytesToWrite){
+    protected void playSample(float[] data){
 
         audioTrack = new AudioTrack.Builder()
                 .setAudioAttributes(new AudioAttributes.Builder()
@@ -136,7 +143,7 @@ public class AudioConstructor extends Fragment {
                         .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
                         .build())
                 .setAudioFormat(new AudioFormat.Builder()
-                        .setEncoding(AudioFormat.ENCODING_PCM_16BIT)
+                        .setEncoding(encoding)
                         .setSampleRate(freq)
                         .setChannelMask(channelOut)
                         .build())
@@ -160,8 +167,8 @@ public class AudioConstructor extends Fragment {
             }
         }
                     try {
-                        while(true) { // Sprawdz PlayBackPosition
-                           int check= audioTrack.write(data, 0, data.length);
+                        while(true) {
+                           int check= audioTrack.write(data, 0, data.length, AudioTrack.WRITE_NON_BLOCKING);
                             if(check == AudioTrack.ERROR_INVALID_OPERATION) break;
                         }
                     } catch (Throwable t) {
@@ -180,15 +187,54 @@ public class AudioConstructor extends Fragment {
     protected void stopPlaying()
     {
         audioTrack.stop();
-        Rthread.interrupt();
+        while(audioTrack.getPlayState()==AudioTrack.PLAYSTATE_PLAYING);
         audioTrack.release();
 
     }
     protected void stopRecording()
     {
         audioRecord.stop();
-       //+ Rthread.interrupt();
+        while (audioRecord.getRecordingState() == AudioRecord.RECORDSTATE_RECORDING);
         audioRecord.release();
+
+    }
+    protected void FFT(float[] data,int buffor)
+    {
+
+
+        FloatFFT_1D fft = new FloatFFT_1D(buffor);
+        fft.realForward(data);
+
+        double[] mag = new double[buffor/2];
+        int czestotliwosc;
+        for(int i = 0; i<buffor/2; i++){
+            double re = data[2*i];
+            double im = data[2*i+1];
+            mag[i] = Math.sqrt(re*re+im*im);
+        }
+        int maxIndex=0;
+        if(data != null) {
+            double maxAmp=0;
+
+            for (int j = 0; j < mag.length; j++) {
+                if(j==0){
+                    maxAmp = mag[j];
+                    maxIndex = j;
+                }else if(mag[j]>maxAmp)
+                {
+                    maxAmp = mag[j];
+                    maxIndex = j;
+                }
+            }
+        }
+        else{
+            Log.e("Error", "Data null");
+        }
+        czestotliwosc =  maxIndex * freq/(buffor);
+
+        mainObject.DataCopied(czestotliwosc);
+        mainObject.updateTextView();
+
 
     }
 }

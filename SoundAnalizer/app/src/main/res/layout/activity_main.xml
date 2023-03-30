@@ -20,14 +20,25 @@
         android:id="@+id/btnPla"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginStart="10dp"
+        android:layout_marginStart="110dp"
         android:onClick="btnPlay"
         android:layout_below="@id/btnRecord"
         android:text = "Play"
         android:layout_centerVertical="true" />
+
     <Button
         android:id="@+id/btnData"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btnRecord"
+        android:layout_toRightOf="@id/btnPla"
+        android:layout_centerInParent="true"
+        android:layout_marginStart="10dp"
+        android:onClick="btnData"
+        android:text="Data" />
+
+    <Button
+        android:id="@+id/btnStopPlaying"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
@@ -38,11 +49,23 @@
 
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/titleTxtView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="250dp"
+        android:layout_marginTop="100dp"
         android:textSize="25dp"
-        android:text="Recorder" />
+        android:text="Sound Analizer" />
+
+    <TextView
+        android:id="@+id/numTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/titleTxtView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"
+        android:textSize="100dp"
+         />
+
+
 </RelativeLayout>
