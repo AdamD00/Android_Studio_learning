@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import java.util.Arrays;
 import java.util.Timer;
 
 
@@ -111,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                audiomanager.Start(3,audioData,numBytes);
+                audiomanager.Start(3, Arrays.copyOf(audioData,numBytes),numBytes);
 
 
                     }
@@ -138,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
 
-                    numTxtView.setText(String.valueOf(updateIntText)+"Hz");
+                    numTxtView.setText(String.valueOf(updateDoubleText)+"Hz");
 
                 }
             });

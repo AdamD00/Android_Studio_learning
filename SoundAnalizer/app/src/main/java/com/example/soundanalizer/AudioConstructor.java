@@ -80,7 +80,7 @@ public class AudioConstructor extends Fragment {
     @SuppressLint({"MissingPermission", "RestrictedApi"})
     protected void recordSample() {
 
-            float[] buffer = new float[bufferSize]; // check bufferSize w tablicy vs w audioRecord
+            float[] buffer = new float[bufferSize];
             boolean whileCheck = false;
             audioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC, freq, channelIN, encoding, bufferSize*2);
         Process.setThreadPriority(Process.THREAD_PRIORITY_AUDIO);
@@ -201,12 +201,13 @@ public class AudioConstructor extends Fragment {
     protected void FFT(float[] data,int buffor)
     {
 
+        float[] complexarray = Arrays.copyOf(data,data.length*2);
 
         FloatFFT_1D fft = new FloatFFT_1D(buffor);
-        fft.realForward(data);
+        fft.complexForward(data);
 
         double[] mag = new double[buffor/2];
-        int czestotliwosc;
+        double czestotliwosc;
         for(int i = 0; i<buffor/2; i++){
             double re = data[2*i];
             double im = data[2*i+1];
@@ -230,7 +231,8 @@ public class AudioConstructor extends Fragment {
         else{
             Log.e("Error", "Data null");
         }
-        czestotliwosc =  maxIndex * freq/(buffor);
+        czestotliwosc =  (double) maxIndex * (double)freq/(double)(buffor);
+        czestotliwosc = Math.round(czestotliwosc*100)/100;
 
         mainObject.DataCopied(czestotliwosc);
         mainObject.updateTextView();
