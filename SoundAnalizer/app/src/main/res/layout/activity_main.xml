@@ -6,46 +6,48 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+
     <Button
         android:id="@+id/btnRecord"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-       android:layout_centerVertical="true"
-        android:layout_marginStart="60dp"
+        android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
         android:onClick="btnRecorder"
         android:text="Record" />
+    <Button
+        android:id="@+id/btnActive"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text = "Active Freq Detect"
+        android:layout_below="@id/btnRecord" />
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/groupLayout"
+        android:layout_below="@id/btnActive"
+        android:layout_centerHorizontal="true">
     <Button
         android:id="@+id/btnPla"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="110dp"
         android:onClick="btnPlay"
-        android:layout_below="@id/btnRecord"
+        android:layout_below="@id/btnActive"
         android:text = "Play"
         android:layout_centerVertical="true" />
 
     <Button
-        android:id="@+id/btnData"
+        android:id="@+id/btnRuntime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/btnRecord"
+        android:layout_below="@id/btnActive"
         android:layout_toRightOf="@id/btnPla"
         android:layout_centerInParent="true"
         android:layout_marginStart="10dp"
-        android:onClick="btnData"
-        android:text="Data" />
-
-    <Button
-        android:id="@+id/btnStopPlaying"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginStart="10dp"
-        android:text = "Stop playing"
-        android:layout_below="@id/btnPla"
-        android:layout_centerVertical="true" />
+        android:text="Save" />
+    </LinearLayout>
 
 
     <TextView
@@ -65,8 +67,20 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="50dp"
         android:textSize="50dp"
-        android:text="0HZ"
+        android:text="-------"
          />
+
+    <Switch
+        android:id="@+id/switch1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/numTextView"
+        android:layout_marginStart="150dp"
+        android:layout_marginTop="50dp"
+        android:textSize="20dp"
+        android:text="Freq"
+        android:checked="true"/>
+
 
 
 </RelativeLayout>
